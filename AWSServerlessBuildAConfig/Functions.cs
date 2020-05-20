@@ -25,6 +25,7 @@ namespace AWSServerlessBuildAConfig
         const string TABLENAME_ENVIRONMENT_VARIABLE_LOOKUP = "BlogTable";
 
         public const string ID_QUERY_STRING_NAME = "Id";
+
         IDynamoDBContext DDBContext { get; set; }
 
         /// <summary>
