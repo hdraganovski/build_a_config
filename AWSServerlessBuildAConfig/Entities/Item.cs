@@ -4,7 +4,7 @@
 
     public class Item
     {
-        public Guid Uid { get; set; }
+        public string Uid { get; set; }
 
         public string Name { get; set; }
 

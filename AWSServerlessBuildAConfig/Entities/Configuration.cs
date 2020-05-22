@@ -5,7 +5,7 @@
 
     public class Configuration
     {
-        public Guid Uid { get; set; }
+        public string Uid { get; set; }
 
         public List<Guid> ItemUids { get; set; }
 

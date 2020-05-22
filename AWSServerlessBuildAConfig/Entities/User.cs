@@ -5,7 +5,7 @@ namespace AWSServerlessBuildAConfig.Entities
 {
     public class User
     {
-        public Guid Uid { get; set; }
+        public string Uid { get; set; }
 
         public string Username { get; set; }
 
