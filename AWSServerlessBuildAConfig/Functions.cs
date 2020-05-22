@@ -38,19 +38,11 @@ namespace AWSServerlessBuildAConfig
         /// </summary>
         public Functions()
         {
-            // Check to see if a table name was passed in through environment variables and if so 
-            // add the table mapping.
-            var tableName = System.Environment.GetEnvironmentVariable(TABLENAME_ENVIRONMENT_VARIABLE_LOOKUP);
-            if (!string.IsNullOrEmpty(tableName))
-            {
-                AWSConfigsDynamoDB.Context.TypeMappings[typeof(Blog)] = new Amazon.Util.TypeMapping(typeof(Blog), tableName);
-            }
-
             AWSConfigsDynamoDB.Context.TypeMappings[typeof(Item)] = new Amazon.Util.TypeMapping(typeof(Item), ItemRepository.TableName);
             AWSConfigsDynamoDB.Context.TypeMappings[typeof(User)] = new Amazon.Util.TypeMapping(typeof(User), UserRepository.TableName);
 
             var config = new DynamoDBContextConfig { Conversion = DynamoDBEntryConversion.V2 };
-            this.DDBContext = new DynamoDBContext(new AmazonDynamoDBClient(), config);
+            DDBContext = new DynamoDBContext(new AmazonDynamoDBClient(), config);
 
             itemRepository = new ItemRepository(DDBContext);
             userRepository = new UserRepository(DDBContext);
@@ -65,16 +57,11 @@ namespace AWSServerlessBuildAConfig
         /// <param name="tableName"></param>
         public Functions(IAmazonDynamoDB ddbClient, string tableName)
         {
-            if (!string.IsNullOrEmpty(tableName))
-            {
-                AWSConfigsDynamoDB.Context.TypeMappings[typeof(Blog)] = new Amazon.Util.TypeMapping(typeof(Blog), tableName);
-            }
-
             AWSConfigsDynamoDB.Context.TypeMappings[typeof(Item)] = new Amazon.Util.TypeMapping(typeof(Item), ItemRepository.TableName);
             AWSConfigsDynamoDB.Context.TypeMappings[typeof(User)] = new Amazon.Util.TypeMapping(typeof(User), UserRepository.TableName);
 
             var config = new DynamoDBContextConfig { Conversion = DynamoDBEntryConversion.V2 };
-            this.DDBContext = new DynamoDBContext(ddbClient, config);
+            DDBContext = new DynamoDBContext(ddbClient, config);
 
             itemRepository = new ItemRepository(DDBContext);
             userRepository = new UserRepository(DDBContext);
@@ -109,45 +96,6 @@ namespace AWSServerlessBuildAConfig
         
         #endregion
         
-        #region Responses
-
-        public static APIGatewayProxyResponse GetOkResponse<T> (T item)
-        {
-            return new APIGatewayProxyResponse
-            {
-                StatusCode = (int)HttpStatusCode.OK,
-                Body = JsonConvert.SerializeObject(item),
-                Headers = new Dictionary<string, string> { { "Content-Type", "application/json" } }
-            };
-        }
-
-        public static APIGatewayProxyResponse GetBlankOkResponse()
-        {
-            return new APIGatewayProxyResponse
-            {
-                StatusCode = (int)HttpStatusCode.OK
-            };
-        }
-
-        public static APIGatewayProxyResponse GetNotFoundResponse()
-        {
-            return new APIGatewayProxyResponse
-            {
-                StatusCode = (int)HttpStatusCode.NotFound
-            };
-        }
-
-        public static APIGatewayProxyResponse GetBadRequestResonse(string message)
-        {
-            return new APIGatewayProxyResponse
-            {
-                StatusCode = (int)HttpStatusCode.BadRequest,
-                Body = message
-            };
-        }
-
-        #endregion
-
         #region Item Endpoints
 
         public async Task<APIGatewayProxyResponse> GetItemsAsync(APIGatewayProxyRequest request, ILambdaContext context)
@@ -172,7 +120,7 @@ namespace AWSServerlessBuildAConfig
             
             if (!itemUid.HasValue)
             {
-                return GetBadRequestResonse($"Missing required parameter {ID_QUERY_STRING_NAME}");
+                return FunctionUtils.GetBadRequestResonse($"Missing required parameter {ID_QUERY_STRING_NAME}");
             }
 
             context.Logger.LogLine($"Getting item {itemUid}");
@@ -181,10 +129,10 @@ namespace AWSServerlessBuildAConfig
 
             if (item == null)
             {
-                return GetNotFoundResponse();
+                return FunctionUtils.GetNotFoundResponse();
             }
 
-            return GetOkResponse(item);
+            return FunctionUtils.GetOkResponse(item);
         }
 
         public async Task<APIGatewayProxyResponse> SaveItemAsync(APIGatewayProxyRequest request, ILambdaContext context)
@@ -194,7 +142,7 @@ namespace AWSServerlessBuildAConfig
             context.Logger.LogLine($"Saving blog with id {item.Uid}");
             var id = await itemService.Save(item);
 
-            return GetOkResponse(id);
+            return FunctionUtils.GetOkResponse(id);
         }
 
         public async Task<APIGatewayProxyResponse> DeleteItemAsync(APIGatewayProxyRequest request, ILambdaContext context)
@@ -203,14 +151,14 @@ namespace AWSServerlessBuildAConfig
             
             if (!itemUid.HasValue)
             {
-                return GetBadRequestResonse($"Missing required parameter {ID_QUERY_STRING_NAME}");
+                return FunctionUtils.GetBadRequestResonse($"Missing required parameter {ID_QUERY_STRING_NAME}");
             }
 
             context.Logger.LogLine($"Deleting item with id {itemUid}");
 
             await itemService.Delete(itemUid.Value.ToString());
 
-            return GetBlankOkResponse();
+            return FunctionUtils.GetBlankOkResponse();
         }
 
         #endregion
