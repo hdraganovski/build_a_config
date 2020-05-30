@@ -1,0 +1,37 @@
+﻿@page
+@inject AWSBuildAConfig.Service.IProductsService ProductsService
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+    var products = ProductsService.GetAllProducts();
+}
+
+@products[0].Name
+
+<div class="grid">
+    @foreach (var product in products)
+    {
+        string productPrice = $"{product.Price} ден.";
+        string productDetailsUrl = $"product/{product.Uid}";
+        string imageUrl = product.ImageUrls.FirstOrDefault() ?? "https://www.anhoch.com/img/no_image.jpg";
+
+        <div class="grid-item product-item m-card">
+            <div class="m-card-image">
+                <img src="@imageUrl" />
+            </div>
+            <div class="m-card-body">
+                <div class="card-title">
+                    <h5>@product.Name</h5>
+                </div>
+                <div class="m-card-text">
+                    @product.Description
+                </div>
+                <div class="m-card-ribbon" data-content="@productPrice"></div>
+                <div class="card-actions">
+                    <a href="@productDetailsUrl" class="btn btn-primary btn-sm">Details</a>
+                    <a href="@productDetailsUrl" class="btn btn-primary btn-sm">Add to cart</a>
+                </div>
+            </div>
+        </div>
+    }
+</div>

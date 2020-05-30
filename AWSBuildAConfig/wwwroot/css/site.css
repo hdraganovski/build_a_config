@@ -1,0 +1,151 @@
+body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+    background: #f0f0f0;
+}
+
+*, *::before, *::after {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+/* Wrapping element */
+/* Set some basic padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* Carousel */
+.carousel-caption p {
+    font-size: 20px;
+    line-height: 1.4;
+}
+
+/* Make .svg files in the carousel display properly in older browsers */
+.carousel-inner .item img[src$=".svg"] {
+    width: 100%;
+}
+
+/* QR code generator */
+#qrCode {
+    margin: 15px;
+}
+
+/* Hide/rearrange for smaller screens */
+@media screen and (max-width: 767px) {
+    /* Hide captions */
+    .carousel-caption {
+        display: none;
+    }
+}
+
+.grid {
+    display: grid;
+    align-items: center;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    grid-gap: 2rem;
+}
+
+/*************************************************/
+/****************** Card *************************/
+.m-card {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    transition-duration: 250ms;
+    background: white;
+    box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.15);
+    border-radius: 0.8rem;
+    position: relative;
+    color: #434343;
+}
+
+    .m-card > *:first-child {
+        border-radius: 0.8rem 0 0 0.8rem;
+    }
+
+    .m-card > *:last-child {
+        border-radius: 0 0.8rem 0.8rem 0;
+    }
+
+    .m-card > * {
+        background: white;
+    }
+
+    .m-card:hover {
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.25);
+    }
+
+.m-card-image {
+    width: 50%;
+    position: relative;
+    margin: auto;
+}
+
+    .m-card-image img {
+        width: 100%;
+        border-radius: 0.8rem;
+    }
+
+.m-card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    width: 50%;
+}
+
+.m-card-title {
+    padding: 0 1.5rem;
+    position: relative;
+}
+
+.m-card-actions {
+    padding: 0 1rem 1rem 1rem;
+    display: flex;
+    flex-direction: row-reverse;
+}
+
+.m-card-text {
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden
+}
+
+.m-card-ribbon {
+    height: 42px;
+}
+
+    .m-card-ribbon::before {
+        position: absolute;
+        content: '';
+        background: #007BDA;
+        background: linear-gradient(45deg, transparent, transparent 50%, #007BDA 50%, #007BDA);
+        height: 28px;
+        width: 28px;
+        bottom: 40px;
+        right: -14px;
+        transform: rotate(45deg);
+    }
+
+    .m-card-ribbon::after {
+        position: absolute;
+        content: attr(data-content);
+        right: -20px;
+        padding: 0.5rem;
+        width: 10rem;
+        background: #007bff;
+        color: white;
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+        box-shadow: 4px 4px 15px rgba(26, 35, 126, 0.2);
+        font-size: 0.8rem;
+        font-weight: 900;
+    }
+
+/********************Card*************************/
+/*************************************************/
